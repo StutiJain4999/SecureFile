@@ -99,6 +99,8 @@ npm run dev
 
 2. Open `http://localhost:5173`.
 
+3. For local frontend-to-backend calls, copy [frontend/.env.example](/C:/Users/pc/Downloads/hidden/hidden/frontend/.env.example) to `frontend/.env` and keep `VITE_API_URL=http://localhost:5000/api`.
+
 ## Operational Notes
 
 - Uploaded files are encrypted before they are written to disk.
@@ -114,3 +116,34 @@ npm run dev
 - Store the master encryption key in a cloud KMS or HSM, not in a local `.env`.
 - Offload audit logs to SIEM infrastructure for retention and detection.
 - Add content-type allowlists and DLP scanning for stricter upload governance.
+
+## Render Deployment
+
+This repo now includes [render.yaml](/C:/Users/pc/Downloads/hidden/hidden/render.yaml) for a Render blueprint that creates:
+
+- a Node backend web service from `backend/`
+- a static frontend site from `frontend/`
+- a persistent disk mounted at `/var/data` for encrypted file storage
+
+### Before deploying
+
+1. Push the repository to GitHub.
+2. In Render, create a new Blueprint and select this repository.
+3. Fill in the backend secret env vars:
+   - `MONGO_URI`
+   - `CLIENT_ORIGIN`
+   - `JWT_SECRET`
+   - `JWT_REFRESH_SECRET`
+   - `MASTER_ENCRYPTION_KEY_HEX`
+   - SMTP settings if you need email flows
+4. Set the frontend `VITE_API_URL` to your backend URL with `/api`, for example:
+
+```text
+https://secure-file-backend.onrender.com/api
+```
+
+### Notes
+
+- `CLIENT_ORIGIN` can contain multiple comma-separated origins if you use both a Render URL and a custom domain.
+- The backend stores encrypted uploaded files on the attached Render disk using `FILE_STORAGE_PATH=/var/data/files`.
+- You can use MongoDB Atlas or another hosted MongoDB provider for `MONGO_URI`. Render does not need to host MongoDB unless you specifically want that.

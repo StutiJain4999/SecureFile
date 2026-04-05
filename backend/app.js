@@ -15,13 +15,15 @@ import { errorHandler, notFoundHandler } from "./middleware/errorMiddleware.js";
 import { requestAuditMiddleware } from "./middleware/requestAuditMiddleware.js";
 
 const app = express();
-const allowedOrigins = new Set(
-  [
-    process.env.CLIENT_ORIGIN,
-    "http://localhost:5173",
-    "http://127.0.0.1:5173"
-  ].filter(Boolean)
-);
+const configuredOrigins = (process.env.CLIENT_ORIGIN || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const allowedOrigins = new Set([
+  ...configuredOrigins,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173"
+]);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
