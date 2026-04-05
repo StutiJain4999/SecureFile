@@ -123,7 +123,6 @@ This repo now includes [render.yaml](/C:/Users/pc/Downloads/hidden/hidden/render
 
 - a Node backend web service from `backend/`
 - a static frontend site from `frontend/`
-- a persistent disk mounted at `/var/data` for encrypted file storage
 
 ### Before deploying
 
@@ -145,5 +144,6 @@ https://secure-file-backend.onrender.com/api
 ### Notes
 
 - `CLIENT_ORIGIN` can contain multiple comma-separated origins if you use both a Render URL and a custom domain.
-- The backend stores encrypted uploaded files on the attached Render disk using `FILE_STORAGE_PATH=/var/data/files`.
+- On Render's free tier, uploaded files are stored on the service filesystem and can be lost after redeploys or restarts.
+- For durable uploads, move the backend to a paid plan with a disk or switch file storage to S3/R2.
 - You can use MongoDB Atlas or another hosted MongoDB provider for `MONGO_URI`. Render does not need to host MongoDB unless you specifically want that.
