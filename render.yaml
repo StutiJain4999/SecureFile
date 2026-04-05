@@ -42,8 +42,9 @@ services:
       mountPath: /var/data
       sizeGB: 1
 
-  - type: static
+  - type: web
     name: secure-file-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
